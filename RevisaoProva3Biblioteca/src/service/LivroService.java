@@ -182,4 +182,28 @@ public class LivroService {
 	public void setLivrosFrame(LivrosFrame livrosFrame) {
 		this.livrosFrame = livrosFrame;
 	}
+
+	public Livro buscarLivroPorId(int id) {
+	    Connection conn = null;
+	    Livro livro = null;
+	    try {
+	        conn = BancoDados.conectar();
+	        LivroDAO livroDAO = new LivroDAO(conn);
+	        livro = livroDAO.buscarLivroPorId(id);
+	    } catch (SQLException | IOException e) {
+	        JOptionPane.showMessageDialog(null, "Erro ao buscar livro: " + e.getMessage(), "Erro de Busca",
+	                JOptionPane.ERROR_MESSAGE);
+	        e.printStackTrace();
+	    } finally {
+	        // Fechar a conexão se estiver aberta
+	        if (conn != null) {
+	            try {
+	                BancoDados.desconectar();
+	            } catch (SQLException e) {
+	                System.err.println("Erro ao fechar a conexão: " + e.getMessage());
+	            }
+	        }
+	    }
+	    return livro;
+	}
 }

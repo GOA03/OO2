@@ -43,6 +43,24 @@ public class LivroDAO {
         }
         return listaLivros;
     }
+    
+    public Livro buscarLivroPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM livro WHERE id = ?";
+        Livro livro = null;
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                livro = new Livro();
+                livro.setId(rs.getInt("id"));
+                livro.setTitulo(rs.getString("titulo"));
+                livro.setAutor(rs.getString("autor"));
+                livro.setAnoPublicacao(rs.getInt("ano_publicacao"));
+                livro.setPaginas(rs.getInt("paginas"));
+            }
+        }
+        return livro;
+    }
 
     public int atualizarLivro(Livro livro) throws SQLException {
         String sql = "UPDATE livro SET titulo = ?, autor = ?, ano_publicacao = ?, paginas = ? WHERE id = ?";

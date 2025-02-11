@@ -13,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
 
 import entities.Livro;
 import service.LivroService;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class LivrosFrame extends JFrame {
 
@@ -33,13 +35,14 @@ public class LivrosFrame extends JFrame {
 		scrollPane.setBounds(10, 11, 625, 417);
 		contentPane.add(scrollPane);
 
-		DefaultTableModel model = new DefaultTableModel();
-		model.addColumn("Titulo");
-		model.addColumn("Autor");
-		model.addColumn("Ano Publicação");
-		model.addColumn("Páginas");
 
-		table = new JTable(model);
+		table = new JTable(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Id", "Titulo", "Autor", "Ano Publicação", "Páginas"
+			}
+		));
 		scrollPane.setViewportView(table);
 
 		// Botão para acessar o CadastroLivroFrame
@@ -51,6 +54,23 @@ public class LivrosFrame extends JFrame {
 			cadastroLivroFrame.setVisible(true); // Torna a janela visível
 		});
 		contentPane.add(btnCadastrarLivro);
+		
+		JButton btnVerMais = new JButton("Ver Mais");
+		btnVerMais.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int linhaSelecionada = table.getSelectedRow();
+				if (linhaSelecionada != -1) {
+					
+					DefaultTableModel model = (DefaultTableModel) table.getModel();
+					int id = (int) model.getValueAt(linhaSelecionada, 0);
+					LivroService livroService = new LivroService();
+					InfoLivroFrame infoLivroFrame = new InfoLivroFrame(livroService.buscarLivroPorId(id));
+					infoLivroFrame.setVisible(true);
+				}
+			}
+		});
+		btnVerMais.setBounds(325, 439, 150, 30);
+		contentPane.add(btnVerMais);
 		
 		atualizarLivros();
 	}
